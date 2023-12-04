@@ -35,7 +35,7 @@ with open(path_lv10) as f:
             level = 5
         if sn == -1:
             print("not found",line)
-        lv10_list.append([str(sn),str(level)])
+        lv10_list.append([str(sn),str(level),line])
 print(lv10_list)
 lv10_list = sorted(lv10_list, key=lambda x: int(x[0]))
 print("sorted")
@@ -43,6 +43,6 @@ print(lv10_list)
 length = len(lv10_list)
 with open(path_10_no, mode='x') as h:
     for i in range(length):
-        h.write('\n'+lv10_list[i][0]+'\t'+lv10_list[i][1])
+        h.write('\n'+lv10_list[i][0]+'\t'+lv10_list[i][1]+'\t'+lv10_list[i][2])
         
         
