@@ -41,35 +41,42 @@ def check_th_score(num, name, level):
         if sent[:3] == "連打秒":
             idx = sent.find("合計約")
             renda_sec = sent[idx+3:idx+8]
-            print("phase1:", renda_sec)
+            #print("phase1:", renda_sec)
             if renda_sec == "秒数目安・":
                 idx = sent.find("合計")
                 renda_sec = sent[idx+2:idx+7]
-            print("phase2:", renda_sec)
+            #print("phase2:", renda_sec)
             if renda_sec == "打秒数目安":
                 idx = sent.find("約")
                 renda_sec = sent[idx+1:idx+6]
-            print("phase3:", renda_sec,"\n")
+            #print("phase3:", renda_sec,"\n")
             #renda_sec.find("秒")
             #renda_sec = renda_sec
             break
 
-        
-    for i in range(len(text_hscroll)):
-        Soup_strong = BeautifulSoup(str(text_hscroll[i]), "html.parser")
-        text_strong = Soup_strong.find_all("strong")
-        strong_word_list = []
-        for strong_element in text_strong:
-            strong_word_list.append(strong_element.text)
-        riron_score = 0
-        for i in range(1,len(strong_word_list)+1):
-            if len(strong_word_list[-i]) <= 5:
-                continue
+    Soup_strong = BeautifulSoup(str(text_hscroll[1]), "html.parser")
+    text_tr_ac16 = Soup_strong.find(lambda tag: tag.name == 'tr' and 'AC16.' in tag.text)
+    strong_list = []
+    for row in text_tr_ac16:
+        try:
+            score_text = row.find('strong').text #点数
+            strong_list.append(score_text)
+        except:
+            continue
+    try:
+        int(strong_list[-1][:-1])
+    except: #もし、AC16.でうまくいかなければ、真打で検証
+        strong_list = []
+        text_tr_sinuti = Soup_strong.find(lambda tag: tag.name == 'tr' and '真打' in tag.text)
+        for row in text_tr_sinuti:
             try:
-                riron_score = int(strong_word_list[-i][:-1])
-                return [riron_score, renda_sec]
+                score_text = row.find('strong').text #点数
+                strong_list.append(score_text)
             except:
                 continue
+    riron_score = strong_list[-1]
+    #print(strong_list)
+    return [riron_score, renda_sec]
 
 
 sn_list = [] #星10の情報が格納
